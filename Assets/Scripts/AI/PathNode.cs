@@ -4,13 +4,27 @@ using UnityEngine;
 
 public class PathNode //: MonoBehaviour
 {
-    public bool walkable;           //  Свободна для перемещения
-    public Vector3 worldPosition;   //  Позиция в глобальных координатах
-    private GameObject objPrefab;   //  Шаблон объекта
-    public GameObject body;         //  Объект для отрисовки
-    
-    private PathNode parentNode = null;               //  откуда пришли
-    
+    /// <summary>
+    /// Свободна для перемещения
+    /// </summary>
+    public bool walkable;
+    /// <summary>
+    /// Позиция в глобальных координатах
+    /// </summary>
+    public Vector3 worldPosition;
+    /// <summary>
+    /// Шаблон объекта
+    /// </summary>
+    private readonly GameObject objPrefab;
+    /// <summary>
+    /// Объект для отрисовки
+    /// </summary>
+    public GameObject body;
+    /// <summary>
+    /// Откуда пришли
+    /// </summary>
+    private PathNode parentNode = null;
+
     /// <summary>
     /// Родительская вершина - предшествующая текущей в пути от начальной к целевой
     /// </summary>
@@ -20,7 +34,10 @@ public class PathNode //: MonoBehaviour
         set => SetParent(value);
     }
 
-    private float distance = float.PositiveInfinity;  //  расстояние от начальной вершины
+    /// <summary>
+    /// Расстояние от начальной вершины
+    /// </summary>
+    private float distance = float.PositiveInfinity;
 
     /// <summary>
     /// Расстояние от начальной вершины до текущей (+infinity если ещё не развёртывали)
@@ -70,7 +87,7 @@ public class PathNode //: MonoBehaviour
     {
         return Vector3.Distance(a.body.transform.position, b.body.transform.position) + 40 * Mathf.Abs(a.body.transform.position.y - b.body.transform.position.y);
     }
-    
+
     /// <summary>
     /// Подсветить вершину - перекрасить в красный
     /// </summary>
@@ -78,7 +95,7 @@ public class PathNode //: MonoBehaviour
     {
         body.GetComponent<Renderer>().material.color = Color.red;
     }
-    
+
     /// <summary>
     /// Снять подсветку с вершины - перекрасить в синий
     /// </summary>

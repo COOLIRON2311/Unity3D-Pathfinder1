@@ -59,10 +59,12 @@ public class Grid : MonoBehaviour
         for (int x = 0; x < sizeX; ++x)
             for (int z = 0; z < sizeZ; ++z)
             {
-                Vector3 position = new Vector3(x * gridDelta, 0, z * gridDelta);
+                Vector3 position = new(x * gridDelta, 0, z * gridDelta);
                 position.y = landscape.SampleHeight(position) + 25;
-                grid[x, z] = new PathNode(nodeModel, false, position);
-                grid[x, z].ParentNode = null;
+                grid[x, z] = new PathNode(nodeModel, false, position)
+                {
+                    ParentNode = null
+                };
                 grid[x, z].Fade();
             }
     }
@@ -71,9 +73,9 @@ public class Grid : MonoBehaviour
     /// </summary>
     /// <param name="current">индексы текущей вершины </param>
     /// <returns></returns>
-    private List<Vector2Int> GetNeighbours(Vector2Int current)
+    private List<Vector2Int> GetNeighbors(Vector2Int current)
     {
-        List<Vector2Int> nodes = new List<Vector2Int>();
+        List<Vector2Int> nodes = new();
         for (int x = current.x - 1; x <= current.x + 1; ++x)
             for (int y = current.y - 1; y <= current.y + 1; ++y)
                 if (x >= 0 && y >= 0 && x < grid.GetLength(0) && y < grid.GetLength(1) && (x != current.x || y != current.y))
@@ -107,7 +109,7 @@ public class Grid : MonoBehaviour
         start.Distance = 0;
 
         //  Очередь вершин в обработке - в A* необходимо заменить на очередь с приоритетом
-        Queue<Vector2Int> nodes = new Queue<Vector2Int>();
+        Queue<Vector2Int> nodes = new();
         //  Начальную вершину помещаем в очередь
         nodes.Enqueue(startNode);
         //  Пока не обработаны все вершины (очередь содержит узлы для обработки)
@@ -117,8 +119,8 @@ public class Grid : MonoBehaviour
             //  Если достали целевую - можно заканчивать (это верно и для A*)
             if (current == finishNode) break;
             //  Получаем список соседей
-            var neighbours = GetNeighbours(current);
-            foreach (var node in neighbours)
+            var neighbors = GetNeighbors(current);
+            foreach (var node in neighbors)
                 if(grid[node.x, node.y].walkable && grid[node.x, node.y].Distance > grid[current.x, current.y].Distance + PathNode.Dist(grid[node.x, node.y], grid[current.x, current.y]))
                 {
                     grid[node.x, node.y].ParentNode = grid[current.x, current.y];
