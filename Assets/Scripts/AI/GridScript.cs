@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-    //  Модель для отрисовки узла сетки
+    /// <summary>
+    ///  Модель для отрисовки узла сетки
+    /// </summary>
     public GameObject nodeModel;
 
-    //  Ландшафт (Terrain) на котором строится путь
+    /// <summary>
+    ///  Ландшафт (Terrain) на котором строится путь
+    /// </summary>
     [SerializeField] private Terrain landscape = null;
 
-    //  Шаг сетки (по x и z) для построения точек
+    /// <summary>
+    ///  Шаг сетки (по x и z) для построения точек
+    /// </summary>
     [SerializeField] private int gridDelta = 20;
 
-    //  Номер кадра, на котором будет выполнено обновление путей
-    private int updateAtFrame = 0;  
+    /// <summary>
+    ///  Номер кадра, на котором будет выполнено обновление путей
+    /// </summary>
+    private int updateAtFrame = 0;
 
-    //  Массив узлов - создаётся один раз, при первом вызове скрипта
+    /// <summary>
+    ///  Массив узлов - создаётся один раз, при первом вызове скрипта
+    /// </summary>
     private PathNode[,] grid = null;
 
     private void CheckWalkableNodes()
@@ -84,18 +94,18 @@ public class Grid : MonoBehaviour
             node.Fade();
             node.ParentNode = null;
         }
-        
+
         //  На данный момент вызов этого метода не нужен, там только устанавливается проходимость вершины. Можно добавить обработку препятствий
         CheckWalkableNodes();
 
-        //  Реализуется аналог волнового алгоритма, причём найденный путь не будет являться оптимальным 
+        //  Реализуется аналог волнового алгоритма, причём найденный путь не будет являться оптимальным
 
         PathNode start = grid[startNode.x, startNode.y];
 
         //  Начальную вершину отдельно изменяем
         start.ParentNode = null;
         start.Distance = 0;
-        
+
         //  Очередь вершин в обработке - в A* необходимо заменить на очередь с приоритетом
         Queue<Vector2Int> nodes = new Queue<Vector2Int>();
         //  Начальную вершину помещаем в очередь
