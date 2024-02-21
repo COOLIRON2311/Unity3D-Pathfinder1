@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using static PathNode;
 
 public class FlyCamera : MonoBehaviour
 {
-    public GameObject obj;
+    public GameObject objPrefab;
     private bool spawning = false;
+    private bool attached = true;
     /*
     Written by Windexglow 11-13-10.  Use it, edit it, steal it I don't care.
     Converted to C# 27-02-13 - no credit wanted.
@@ -38,6 +40,13 @@ public class FlyCamera : MonoBehaviour
 
     void Update()
     {
+
+        // Detach from camera controls
+        if (Input.GetKeyDown(KeyCode.Escape))
+            attached = !attached;
+        if (!attached)
+            return;
+
         lastMouse = Input.mousePosition - lastMouse;
         lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
         lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
@@ -76,7 +85,7 @@ public class FlyCamera : MonoBehaviour
             transform.Translate(p);
         }
 
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             Application.Quit();
 #if UNITY_EDITOR
@@ -88,12 +97,30 @@ public class FlyCamera : MonoBehaviour
         {
             if (!spawning)
             {
-                Instantiate(obj, gameObject.transform.position, Quaternion.identity);
+                Instantiate(objPrefab, gameObject.transform.position, Quaternion.identity);
                 spawning = true;
             }
         }
         else
             spawning = false;
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            GridScript.Heuristic = Dist;
+            print("Switched heuristic to Euclidean distance");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            GridScript.Heuristic = Manhattan;
+            print("Switched heuristic to Manhattan distance");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            GridScript.Heuristic = Chebyshev;
+            print("Switched heuristic to Chebyshev distance");
+        }
     }
 
     /// <summary>
