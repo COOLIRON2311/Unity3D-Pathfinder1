@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grid : MonoBehaviour
+public class GridScript : MonoBehaviour
 {
     /// <summary>
     ///  Модель для отрисовки узла сетки

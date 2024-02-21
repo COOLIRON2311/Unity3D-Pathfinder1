@@ -3,7 +3,8 @@ using System.Collections;
 
 public class FlyCamera : MonoBehaviour
 {
-
+    public GameObject obj;
+    private bool spawning = false;
     /*
     Written by Windexglow 11-13-10.  Use it, edit it, steal it I don't care.
     Converted to C# 27-02-13 - no credit wanted.
@@ -75,6 +76,24 @@ public class FlyCamera : MonoBehaviour
             transform.Translate(p);
         }
 
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
+
+        if (Input.GetKey(KeyCode.E))
+        {
+            if (!spawning)
+            {
+                Instantiate(obj, gameObject.transform.position, Quaternion.identity);
+                spawning = true;
+            }
+        }
+        else
+            spawning = false;
     }
 
     /// <summary>
