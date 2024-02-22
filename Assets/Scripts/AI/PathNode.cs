@@ -17,6 +17,7 @@ public class PathNode
     /// Свободна для перемещения
     /// </summary>
     public bool Walkable => State != NodeState.Obstructed;
+    public static float Coefficient = 40.0f;
     /// <summary>
     /// Позиция в глобальных координатах
     /// </summary>
@@ -97,7 +98,13 @@ public class PathNode
     {
         Vector3 a_pos = a.body.transform.position;
         Vector3 b_pos = b.body.transform.position;
-        return Vector3.Distance(a_pos, b_pos) + 40 * Mathf.Abs(a_pos.y - b_pos.y);
+        // return Vector3.Distance(a_pos, b_pos) + Coefficient * Mathf.Abs(a_pos.y - b_pos.y);
+        float dist = Vector3.Distance(a_pos, b_pos);
+        float dy = b_pos.y - a_pos.y;
+        if (dy > 0) // учитываем подъем в гору
+            return dist + Coefficient * dy;
+        else
+            return dist + Coefficient / 2 * -dy;
     }
 
     /// <summary>

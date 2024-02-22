@@ -139,7 +139,7 @@ public class GridScript : MonoBehaviour
         var start = grid[startNode.x, startNode.y];
         start.Distance = 0;
 
-        PriorityQueue<Vector2Int> open = new();
+        PriorityQueue<Vector2Int, float> open = new();
         HashSet<Vector2Int> closed = new();
         open.Enqueue(Heuristic(grid[startNode.x, startNode.y], grid[finishNode.x, finishNode.y]), startNode);
 
@@ -175,6 +175,7 @@ public class GridScript : MonoBehaviour
 
         PathNode path = grid[finishNode.x, finishNode.y];
         print($"A* dist: {path.Distance}");
+        print($"Nodes visited: {closed.Count}");
         while (path != null)
         {
             path.Illuminate(NodeState.ActiveA_star);
@@ -198,7 +199,7 @@ public class GridScript : MonoBehaviour
         var start = grid[startNode.x, startNode.y];
         start.Distance = 0;
 
-        PriorityQueue<Vector2Int> queue = new();
+        PriorityQueue<Vector2Int, float> queue = new();
         HashSet<Vector2Int> visited = new();
         queue.Enqueue(0, startNode);
 
@@ -233,6 +234,7 @@ public class GridScript : MonoBehaviour
 
         PathNode path = grid[finishNode.x, finishNode.y];
         print($"Dijkstra dist: {path.Distance}");
+        print($"Nodes visited: {visited.Count}");
         while (path != null)
         {
             path.Illuminate(NodeState.ActiveDijkstra);

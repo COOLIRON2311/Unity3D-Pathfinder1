@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using static PathNode;
+using UnityEditor;
 
 public class FlyCamera : MonoBehaviour
 {
     public GameObject objPrefab;
     private bool spawning = false;
-    private bool attached = true;
+    private static bool attached = true;
+    private int heuristic_index = 0;
     /*
     Written by Windexglow 11-13-10.  Use it, edit it, steal it I don't care.
     Converted to C# 27-02-13 - no credit wanted.
@@ -37,9 +39,50 @@ public class FlyCamera : MonoBehaviour
     /// </summary>
     private Vector3 lastMouse = new(255, 255, 255);
     private float totalRun = 1.0f;
+    readonly ModalWindow win = new(0, () => attached = true);
+
+    void OnGUI()
+    {
+        if (win.Active)
+            win.MainLoop();
+    }
 
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            win.Active = true;
+            attached = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            heuristic_index = (heuristic_index + 1) % 3;
+            switch (heuristic_index)
+            {
+                case 0:
+                    GridScript.Heuristic = Dist;
+                    print("Switched heuristic to weighted Euclidean distance");
+                    break;
+                case 1:
+                    GridScript.Heuristic = Manhattan;
+                    print("Switched heuristic to Manhattan distance");
+                    break;
+                case 2:
+                    GridScript.Heuristic = Chebyshev;
+                    print("Switched heuristic to Chebyshev distance");
+                    break;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            Application.Quit();
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#endif
+        }
 
         // Detach from camera controls
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -85,14 +128,6 @@ public class FlyCamera : MonoBehaviour
             transform.Translate(p);
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            Application.Quit();
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#endif
-        }
-
         if (Input.GetKey(KeyCode.E))
         {
             if (!spawning)
@@ -103,24 +138,6 @@ public class FlyCamera : MonoBehaviour
         }
         else
             spawning = false;
-
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            GridScript.Heuristic = Dist;
-            print("Switched heuristic to Euclidean distance");
-        }
-
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            GridScript.Heuristic = Manhattan;
-            print("Switched heuristic to Manhattan distance");
-        }
-
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            GridScript.Heuristic = Chebyshev;
-            print("Switched heuristic to Chebyshev distance");
-        }
     }
 
     /// <summary>
